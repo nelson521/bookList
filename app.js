@@ -8,6 +8,22 @@ function Book(title, author, isbn) {
 // UI Constructor
 function UI() {}
 
+// Add book to list
+UI.prototype.addBookToList = function (book) {
+  // Make a list
+  const list = document.getElementById('book-list');
+  // Create tr element
+  const row = document.createElement('tr');
+  // Insert cols
+  row.innerHTML = `
+    <td>${book.title}</td>
+    <td>${book.author}</td>
+    <td>${book.isbn}</td>
+    <td><a href="#" class="delete">X</a></td>
+  `;
+
+  list.appendChild(row);
+};
 // Event Listeners
 document.getElementById('book-form').addEventListener('submit', function (e) {
   // Get forms values
@@ -15,6 +31,14 @@ document.getElementById('book-form').addEventListener('submit', function (e) {
     author = document.getElementById('author').value,
     isbn = document.getElementById('isbn').value;
 
-  console.log(title, author, isbn);
+  // Instantiate Book
+  const book = new Book(title, author, isbn);
+
+  // Instantiate Book
+  const ui = new UI();
+
+  // Add book to list
+  ui.addBookToList(book);
+
   e.preventDefault();
 });
