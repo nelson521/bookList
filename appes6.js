@@ -61,20 +61,47 @@ class UI {
 // Local storage class
 class Store {
   static getBooks() {
-    books;
+    let books;
     if (localStorage.getItem('books') === null) {
-      let books = [];
+      books = [];
     } else {
       books = JSON.parse(localStorage.getItem('books'));
     }
+    return books;
   }
 
-  static displayBooks() {}
+  static displayBooks() {
+    const books = Store.getBooks();
 
-  static addBook() {}
+    books.forEach(function (book) {
+      const ui = new UI();
+      ui.addBookToList(book);
+    });
+  }
 
-  static removeBook() {}
+  static addBook(book) {
+    const books = Store.getBooks();
+
+    books.push(book);
+
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+
+  static removeBook(isbn) {
+    const books = Store.getBooks();
+
+    books.forEach(function (book, index) {
+      if (book.isbn === isbn) {
+        books.splice(index, 1);
+      }
+    });
+
+    localStorage.setItem('books', JSON.stringify(books));
+  }
 }
+
+// DOM LOAD EVENT
+document.addEventListener('DOMContentLoaded', Store.displayBooks);
 
 // Event Listener for add book
 document.getElementById('book-form').addEventListener('submit', function (e) {
@@ -112,6 +139,9 @@ document.getElementById('book-list').addEventListener('click', function (e) {
   const ui = new UI();
   // Delete Book
   ui.deleteBook(e.target);
+
+  // Remove from LS
+  Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
 
   // show message
   ui.showAlert(`Book Removed`, `success`);
